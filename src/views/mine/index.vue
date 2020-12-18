@@ -1,13 +1,19 @@
 <template>
   <div id="app">
     <!-- 侧边栏 -->
-    <van-cell @click="showPopup"><van-icon name="wap-nav" id="haha"/></van-cell>
-    <van-popup v-model="show" position="left" :style="{ height: '100%' }">
+    <van-cell @click="showPopup" id="hahah"
+      ><van-icon name="wap-nav" id="haha"
+    /></van-cell>
+    <van-popup
+      v-model="show"
+      position="left"
+      :style="{ width: '30%', height: '100%' }"
+    >
       <!-- 账户 -->
       <van-cell-group id="woqu">
         <van-cell is-link>
           <img :src="img" alt="" class="tu" />
-          <span>{{val}}</span></van-cell
+          <span>{{ val }}</span></van-cell
         >
       </van-cell-group>
 
@@ -35,16 +41,11 @@
       <van-cell title="退出登录/关闭" to="index" @click="out" />
     </van-popup>
 
-
     <!-- 登录 -->
-    <van-cell-group id="woqu" @click="godeng">
-      <van-cell is-link v-if="flag">
+    <van-cell-group @click="godeng">
+      <van-cell is-link class="woqu">
         <img :src="img" alt="" class="tu" />
-        <span>{{val}}</span></van-cell
-      >
-      <van-cell is-link v-if="!flag">
-        <img :src="img" alt="" class="tu" />
-        <span>昵称</span></van-cell
+        <span>{{ val }}</span></van-cell
       >
     </van-cell-group>
     <!-- 导航 -->
@@ -69,27 +70,29 @@
       </van-cell>
     </van-cell-group>
     <!-- 歌单 -->
-    <van-tabs v-model="active" @click="addgedan">
-      <van-tab title="创建歌单" >
-        <span>创建歌单</span>
-        <van-icon name="add-o" />
-        <ul>
-          <li v-for="item in list" :key="item.id" @click="getSongs(item.id)">{{item.name}}</li>
-        </ul>
-        
-        <van-popup v-model="showw" position="bottom" :style="{ height: '30%' }" >
+    <div id="gedan">
+      <van-tabs v-model="active" @click="addgedan">
+        <van-tab title="创建歌单">
+          <ul>
+            <li v-for="item in list" :key="item.id" @click="getSongs(item.id)">
+              {{ item.name }}
+            </li>
+          </ul>
+
+          <van-popup
+            v-model="showw"
+            position="bottom"
+            :style="{ height: '30%' }"
+          >
             <p>新建歌单</p>
-         <input type="text" v-model="oinp" />
-         <button @click="queding">确定</button>
-        </van-popup>
-      </van-tab>
-      <van-tab title="收藏歌单">
-        <p>收藏歌单<span>4</span>个</p>
-      </van-tab>
-      <van-tab title="歌单助手">
-        <p>歌单助手<span>4</span>个</p>
-      </van-tab>
-    </van-tabs>
+            <input type="text" v-model="oinp" class="tex" />
+            <button @click="queding">确定</button>
+          </van-popup>
+        </van-tab>
+        <van-tab title="收藏歌单"> </van-tab>
+        <van-tab title="歌单助手"> </van-tab>
+      </van-tabs>
+    </div>
   </div>
 </template>
 
@@ -97,69 +100,66 @@
 export default {
   data() {
     return {
-      oinp:"",
-      flag: true,
-      show: false,
-      active:"",
-      showw: false,
-      val:"请登录",
-      img:"",
-      uid:0,
-      list:""
+      oinp: "",
 
+      show: false,
+      active: "",
+      showw: false,
+      val: "请登录",
+      img: "",
+      uid: 0,
+      list: "",
     };
   },
   computed: {},
   watch: {},
   methods: {
-    
-    getSongs(id){
-     
-      this.$http.get(`api/playlist/highquality/tags`).then(res=>{
-           console.log(res)
-          localStorage.setItem("jump",JSON.stringify(id))
-          this.$router.push(`../jump/${id}`)
-        })
-   
- 
-    
+    getUsers() {
+      this.uid = Number(localStorage.getItem("userid"));
+      this.$http.get(`api/user/detail?uid=${this.uid}`).then((res) => {
+        console.log(res.data.profile.nickname);
+        this.val = res.data.profile.nickname;
+        this.img = res.data.profile.avatarUrl;
+      });
     },
-    queding(){
-this.$http.get(`/api/playlist/create?name=${this.oinp}`).then((res) => {
+    getSongs(id) {
+      this.$http.get(`api/playlist/highquality/tags`).then((res) => {
+        console.log(res);
+        localStorage.setItem("jump", JSON.stringify(id));
+        this.$router.push(`../jump/${id}`);
+      });
+    },
+    queding() {
+      this.$http.get(`/api/playlist/create?name=${this.oinp}`).then((res) => {
         console.log(res);
       });
     },
-getgedan(){
-this.uid = Number(localStorage.getItem("userid"))
+    getgedan() {
+      this.uid = Number(localStorage.getItem("userid"));
 
-this.$http.get(`/api/user/playlist?uid=${this.uid}`).then((res) => {
-        console.log("rtrtr",res.data.playlist);
-        this.list=res.data.playlist
+      this.$http.get(`/api/user/playlist?uid=${this.uid}`).then((res) => {
+        console.log("rtrtr", res.data.playlist);
+        this.list = res.data.playlist;
       });
-
-  
-},
-
-    addgedan(){
-      console.log("1")
- this.showw = true;
     },
-    out(){
+
+    addgedan() {
+      console.log("1");
+      this.showw = true;
+    },
+    out() {
       this.$http.get("/api/logout").then((res) => {
-        console.log(res)
-        localStorage.removeItem('userid')
-        localStorage.removeItem('img')
-        this.$router.push("../deng")
-        this.val="请登录"
-       
+        console.log(res);
+        localStorage.removeItem("userid");
+        localStorage.removeItem("img");
+        this.$router.push("../deng");
+        this.val = "请登录";
       });
     },
-    godeng(){
-      if(this.val.length<=3){
-         this.$router.push("./deng")
+    godeng() {
+      if (this.val.length <= 3) {
+        this.$router.push("./deng");
       }
-     
-        
     },
     showPopup() {
       this.show = true;
@@ -171,14 +171,10 @@ this.$http.get(`/api/user/playlist?uid=${this.uid}`).then((res) => {
     },
   },
   created() {
-   
-    this.img=JSON.parse(localStorage.getItem("img"))
-    // let b=JSON.parse(localStorage.getItem("userid"))
-    if(JSON.parse(localStorage.getItem("userid"))){
-      this.val="辱耳脏眼版抑郁云"
-    }
-    this.getgedan()
+    this.img = JSON.parse(localStorage.getItem("img"));
 
+    this.getUsers();
+    this.getgedan();
   },
   mounted() {},
   beforeCreate() {},
@@ -196,31 +192,64 @@ this.$http.get(`/api/user/playlist?uid=${this.uid}`).then((res) => {
 #app {
   background: #e4e4e4;
 }
+.woqu {
+  background: #e4e4e4;
+}
+#hahah {
+  background: #e4e4e4;
+}
+.van-cell-group {
+  width: 90%;
+  margin-left: 5%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
 #haha {
   font-size: 30px;
+}
+.tex {
+  border: 1px solid black;
 }
 #women {
   border: 0;
 }
+
 .tu {
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
 #nav {
-  width: 100%;
-  margin: 20px 0 20px 0;
-  border-radius: 30px;
+  width: 90%;
+  margin-left: 5%;
+  border-radius: 20px;
   overflow: hidden;
-  background: #e4e4e4;
+  background: #f8f2f2;
 }
-ul li{
+ul li {
   width: 100%;
   height: 50px;
-  border: solid 1px black;
+
   margin-bottom: 5px;
-  background-color: aquamarine;
+
   text-align: center;
   line-height: 50px;
+}
+.van-tab {
+  background: red;
+  font-size: 40px;
+}
+.van-tab__pane {
+  background: #fff;
+}
+#gedan {
+  width: 90%;
+  margin-left: 5%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f8f2f2;
+  margin-bottom: 40px;
 }
 </style>

@@ -8,13 +8,20 @@
       <router-link to="/yuncun" tag="li"><dt><van-icon name="shop-collect-o" size=25px active-class="color" /><dl>云村</dl></dt></router-link>
     </ul> -->
 
-    <van-tabbar v-model="active" active-color="#ee0a24" inactive-color="#000">
-      <van-tabbar-item icon="service-o" to="/find" tag="li">发现</van-tabbar-item>
-      <van-tabbar-item icon="music-o" to="/boke" tag="li">播客</van-tabbar-item>
-      <van-tabbar-item icon="smile-o" to="/mine" tag="li"
-        >我的</van-tabbar-item
+    <van-tabbar
+      v-model="active"
+      active-color="#ee0a24"
+      inactive-color="#000"
+      route
+    >
+      <van-tabbar-item icon="service-o" to="/find" tag="li"
+        >发现</van-tabbar-item
       >
-      <van-tabbar-item icon="play-circle-o" to="/kge" tag="li">k歌</van-tabbar-item>
+      <van-tabbar-item icon="music-o" to="/boke" tag="li">播客</van-tabbar-item>
+      <van-tabbar-item icon="smile-o" to="/mine" tag="li">我的</van-tabbar-item>
+      <van-tabbar-item icon="play-circle-o" to="/kge" tag="li"
+        >k歌</van-tabbar-item
+      >
       <van-tabbar-item icon="shop-collect-o" to="/yuncun" tag="li"
         >云村</van-tabbar-item
       >
@@ -45,4 +52,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.footer .van-tabbar li.active {
+  color: #f03d37;
+}
+</style>
